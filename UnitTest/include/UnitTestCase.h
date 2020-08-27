@@ -3,15 +3,26 @@
 #include "UnitTestRunnable.h"
 #include <string>
 namespace CXF {
-    class UnitTestCase : private UnitTestRunnable{
+    class UnitTestCase : public UnitTestRunnable{
+        bool isOkay;
+        std::string mName;
+        std::string mMsg;
+        std::string mFailMsgLines;
+        std::string mSummary;
         public:
-            typedef void (*UnitTestCaseFunc)(UnitTestCase*);
+            typedef bool (*UnitTestCaseFunc)(UnitTestCase*);
         private:
             std::string mLogStr;
             UnitTestCaseFunc mCaseFunc;
         public:
-            UnitTestCase(UnitTestCaseFunc func);
+            void assertFailured(const char* file,int line,const char* msg);
+            UnitTestCase(const char* name,UnitTestCaseFunc func);
+            ~UnitTestCase();
             void run();
+            int count();
+            int failCount();
+            const std::string& summary();
+            std::string failMsgLines();
             void print();
     };
 }
